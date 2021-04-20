@@ -2,6 +2,29 @@ import Link, { LinkProps } from 'next/link'
 import React from 'react'
 
 // what is this Omit being extended?
+/*
+Omit is a Typescript generic type that allows us to remove some fields from a type, for example:
+
+interface A {
+  field1: number
+  field2: string
+  field3: boolean
+}
+*Now if we want to create a type that does not contain `field3`, we can use Omit
+type NoField3 = Omit<A, 'field3'>
+
+type NoField3 is equals to 
+interface NoField3 {
+  field1: number
+  field2: string
+}
+
+Another common type is the Pick generic type, 
+which is used to Pick the given fields instead of removing them, 
+in essence, Omit and Pick are opposite of each other. 
+
+[Read More](https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys)
+*/
 interface IAnchorProps
   extends Omit<
     React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,

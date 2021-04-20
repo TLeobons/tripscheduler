@@ -38,6 +38,10 @@ import { api } from 'services/httpService'
 import { customStyles } from 'utils/style/customStyles'
 
 // what is the NextPage?
+/*
+  The NextPage is a typescript type given to us by next.js to properly type a page component, 
+  which is different from a regular React component living inside the components directory.
+*/
 const EditTrip: NextPage<{ id: string }> = ({ id }) => {
   const [state, dispatch] = useContext(TripContext)
 
@@ -82,6 +86,11 @@ const EditTrip: NextPage<{ id: string }> = ({ id }) => {
             transition={{ duration: 1 }}
           >
             {/* q?? */}
+            {/*
+              Again, your code not mine.
+
+              [Check it out here](https://github.com/TLeobons/sundayfix/blob/4d881807952e9cbf771d16eafe1c6bbc9a416276/src/pages/EditTrip.jsx#L90)
+            */}
             <Label htmlFor='q' style={{ textAlign: 'center' }}>
               Trip modified Successfully
             </Label>
@@ -105,6 +114,19 @@ const EditTrip: NextPage<{ id: string }> = ({ id }) => {
             <InnerForm>
               <FormGroup>
                 {/* what are those xValues?? */}
+                {/*
+                  The xValues is an array of values used by framer-motion to animate a component on the x-axis, ex:
+
+                  const xValues = [5000, -40, 0]
+                  ...
+
+                  <DPDown animate={{ x: xValues }} transition={{ duration: 1 }}>
+                  ...
+                  </DPDown>
+
+                  This tells framer-motion to start the element on the x-axis at 5000 px, then animate it to the -50 px position, 
+                  then end the animation at 0 px position, giving this element a nice spring-like animation.
+                */}
                 <DPDown animate={{ x: xValues }} transition={{ duration: 1 }}>
                   <Label htmlFor='countries'>Where do you want to go</Label>
                   <Dropdown
@@ -135,9 +157,20 @@ const EditTrip: NextPage<{ id: string }> = ({ id }) => {
                     <DatePicker
                       required
                       // what does the line below do?
+                      /*
+                        It's a simple type checking because the selected prop is of type Date | undefined 
+                        we check the type of the startDate variable if it is of type string we use undefined as the value for this prop, 
+                        else we use startDate as the value for this prop.
+                      */
                       selected={typeof startDate === 'string' ? undefined : startDate}
                       onChange={(date) => {
                         // why date as any?
+                        /*
+                          The any type convert a variable that can be assigned or assigned to any type, 
+                          without any type collision, this is commonly used in places where the type on not known.
+
+                          [Read More](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#any)
+                        */
                         let nextDay = moment(date as any)
                           .add(1, 'day')
                           .toDate()
@@ -377,6 +410,13 @@ const EditTrip: NextPage<{ id: string }> = ({ id }) => {
 
 export default EditTrip
 // what is the function below doing?
+/*
+  This function is used for SSR, and it receives the path parameter for the current page, ex:
+  the current file is pages/editTrip/[id].tsx, this file is a next.js page, that has a path param named id. 
+  So, the getServerSideProps method exported from this file will be called with the id path param that is used to fetch the relevant data for the current page.
+
+  [Read More](https://nextjs.org/docs/basic-features/data-fetching#getserversideprops-server-side-rendering)
+*/
 export const getServerSideProps: GetServerSideProps<any, any> = async ({ params: { id } }) => {
   return {
     props: {

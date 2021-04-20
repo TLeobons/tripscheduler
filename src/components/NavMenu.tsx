@@ -32,7 +32,14 @@ const NavMenu = () => {
         </Logo>
 
         <MenuItems>
-        {/* why do you use that skipATag? */}
+          {/* why do you use that skipATag? */}
+          {/*
+            Because, the Anchor component uses the a tag internally as it children wrapper, 
+            but the parent of the Anchor component may want to supply a custom a tag with additional props like onClick handler, className, style etc.
+
+            So, I needed a way to skip the wrapping of the a tag internally in the Anchor component to avoid double a tags (an a tag within another a tag), 
+            so I used a prop named skipATag to check and skip the internal wrapping of the a tag inside the Anchor component
+        */}
           <Anchor href='/newTrip' skipATag>
             <StyledNavLink onClick={menuCtx.toggleMenu}>
               <NewTrip

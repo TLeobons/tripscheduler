@@ -10,7 +10,11 @@ import { device } from 'utils/style/responsive'
 import { init } from '../utils/sentry'
 
 init()
-// why the Head here? I though it should be in _document
+// why the Head here? I thought it should be in _document
+/*
+  The Head component can be used anywhere, where we need to put something in the head section of the HTML document, 
+  for ex: change the title according to the page, add a custom script tag, add meta tags, etc.
+*/
 const App: NextPage<any, any> = ({ Component, pageProps }) => {
   return (
     <>

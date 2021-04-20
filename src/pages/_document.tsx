@@ -1,7 +1,12 @@
 import Document from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 
-// i dindt understand pretty much anything that this module does
+// i didn't understand pretty much anything that this module does
+/*
+  The _document.tsx file is used here to support styled components on the SSR performed by next.js. 
+  Basically, this file gathers all the styles from the styled-components created and merges them in a style tag, 
+  and append that to the head of the HTML document.
+*/
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: any) {
     const sheet = new ServerStyleSheet()

@@ -13,6 +13,12 @@ import Anchor from './Anchor'
 import SVGIcon from './SVGIcon'
 
 // what is this HTMLMotionProps being extended?
+/*
+  Because in pages/index.tsx:25 the initial prop was being passed to this component, 
+  hence the TripRow components must be able to accept those props, 
+  and since this is a framer-motion prop, those props must be extended in the ITripRowProps.
+  But since these motion props are not being used in the TripRow component both the extends HTMLMotionProps<'div'> and initial={{ y: -250 }} can be removed safely.
+*/
 export interface ITripRowProps extends HTMLMotionProps<'div'> {
   country: string
   company: string
@@ -22,11 +28,36 @@ export interface ITripRowProps extends HTMLMotionProps<'div'> {
 }
 const TripRow: FC<ITripRowProps> = ({ country, company, date, id, address }) => {
   const [modalIsOpen, setIsOpen] = useState(false)
-    // whats this [1] in the useContext?
+  // whats this [1] in the useContext?
+  /*
+    You're getting the 1th element from the array returned by useContext(TripContext).
+    ex:
+
+    *const [, dispatch] = useContext(TripContext)
+    here you're doing a destructured assignment, and you're skipping the first element as you don't need it.
+    Another approach is to directly assign the 1th element from the array to the assignment variable like below.
+
+    *const dispatch = useContext(TripContext)[1]
+  */
   const dispatch = useContext(TripContext)[1]
   const animation = useAnimation()
 
   // what is this as keyof typeof FlagMap?
+  /*
+    Because the country prop is of string type, it creates a type collision when trying to use it as the key of the FlagMap object. 
+    So, in order to prevent this type of collision, we make a type conversion using the as keyof typeof FlagMap.
+    Now, the flag variable is of the correct type and can be used as the key inside FlagMap object.
+
+    To understand how this works, let's break it down.
+    The FlagMap is a const object.
+    The typeof FlagMap gives us the type of the structure of the FlagMap object.
+    And since It's an object It must have a key-value pair type data structure.
+    So, in order to get the keys of the FlagMap object, we use keyof typeof FlagMap.
+
+    [Read about keyof here](https://www.typescriptlang.org/docs/handbook/2/keyof-types.html)
+
+    [Read about typeof here](https://www.typescriptlang.org/docs/handbook/2/typeof-types.html)
+  */
   const flag = country.toLowerCase().split(' ').join('-') as keyof typeof FlagMap
   const image = FlagMap[flag].icon
 
@@ -41,7 +72,13 @@ const TripRow: FC<ITripRowProps> = ({ country, company, date, id, address }) => 
     }
   }
 
-  // why awai the animation then below call it again without awaiting?
+  // why await the animation then below call it again without awaiting?
+  /*
+    The animation.start method returns a promise. 
+    So, if don't await the promise, the sequence method will start two animations simultaneously. 
+    In order to avoid that, we wait for the first animation to finish using await, 
+    only then we start our second animation.
+  */
   async function sequence() {
     await animation.start({ y: 70, transition: { duration: 0.2 } })
     animation.start({ y: 0, transition: { duration: 0.2 } })
@@ -54,8 +91,18 @@ const TripRow: FC<ITripRowProps> = ({ country, company, date, id, address }) => 
       <Modal
         isOpen={modalIsOpen}
         // why these customStyles exported an all the others in the same module as styled-components, what does it do?
+        /*
+          The customStyles object was being used in more the one place, 
+          so it was better to create and export it from one place, and import, 
+          where needed, rather than having duplicated all around the codebase.
+        */
         style={customStyles}
         // whats this?
+        /*
+          This is an aria attribute used by a screen reader.
+
+          [Read More](https://developer.mozilla.org/en-US/docs/Learn/Accessibility/WAI-ARIA_basics)
+        */
         ariaHideApp={false}
         onRequestClose={() => setIsOpen(false)}
       >
@@ -65,6 +112,11 @@ const TripRow: FC<ITripRowProps> = ({ country, company, date, id, address }) => 
           transition={{ duration: 1 }}
         >
           {/* q?? */}
+          {/*
+            That is your code from the original sundayfix project.
+
+            [Check it out](https://github.com/TLeobons/sundayfix/blob/4d881807952e9cbf771d16eafe1c6bbc9a416276/src/components/TripRow.jsx#L95)
+          */}
           <Label htmlFor='q'>Are you sure you want to delete this trip?</Label>
           <FormButtonGroup>
             <AcceptDeleteButton

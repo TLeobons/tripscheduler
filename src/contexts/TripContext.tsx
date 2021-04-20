@@ -27,12 +27,23 @@ type TripPayloadDispatchAction = {
 }
 
 // what does the line below do?
+/*
+  The following snippet creates a type TripPalyload which is an array of two element, 
+  where the 0th element is of type typeof initialState, and the 1th element is of type Dispatch<TripPayloadDispatchAction>.
+*/
 type TripPayload = [typeof initialState, Dispatch<TripPayloadDispatchAction>]
 
 // what does the undefined as any do?
+/*
+  Since the createContext<TripPayload> function expects an initial value of type TripPayload which we can only provide on the Provider we need to pass undefined as the initial value, and since it only accepts an initial value of type TripPayload we need to convert the undefined type to TripPayload type.
+  We do that with following.
+
+  *undefined as any
+*/
 export const TripContext = createContext<TripPayload>(undefined as any)
 
 // where do you get these types like TripPayloadDispatchAction from?
+// I have created the TripPayloadDispatchAction type on line 24.
 const reducer = (state: typeof initialState, action: TripPayloadDispatchAction) => {
   switch (action.type) {
     case 'SET_INITIAL':
@@ -185,6 +196,11 @@ const TripProvider: FC = ({ children }) => {
   }, [])
 
   // didnt understand anything of the syntax of this fetchCountries!!
+  /*
+    Again, It's your code, not mine.
+
+    [Check it out here](https://github.com/TLeobons/sundayfix/blob/4d881807952e9cbf771d16eafe1c6bbc9a416276/src/contexts/TripContext.js#L183)
+  */
   const fetchCountries = async () => {
     const { data } = (await api.get('/country')) as {
       data: { label: string }[]
